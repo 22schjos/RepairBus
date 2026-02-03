@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Der Repair-Lieferwagen | TFO Max Valier</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Verdana', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Wir holen uns die Icons von der Lucide-Bibliothek
+        const { 
+            Wrench, Calendar, Users, Phone, MapPin, Clock, 
+            Menu, X, Heart, BatteryCharging, School, Camera, PenTool 
+        } = lucide;
+
+        // Hilfskomponente für Icons, da Lucide in HTML-Script-Tags anders geladen wird
+        const Icon = ({ name: IconComponent, size = 20, className = "" }) => {
+            return <IconComponent size={size} className={className} />;
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = React.useState('home');
+            const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+            const IMAGES = {
+                hero: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop",
+                team: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
+                repair: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=2070&auto=format&fit=crop"
+            };
+
+            const navigateTo = (tab) => {
+                setActiveTab(tab);
+                setMobileMenuOpen(false);
+                window.scrollTo(0, 0);
+            };
+
+            const navItems = [
+                { id: 'home', label: 'Startseite', icon: Heart },
+                { id: 'services', label: 'Was wir reparieren', icon: Wrench },
+                { id: 'schedule', label: 'Fahrplan', icon: Calendar },
+                { id: 'about', label: 'Über Uns', icon: Users },
+                { id: 'contact', label: 'Kontakt', icon: Phone },
+            ];
+
+            return (
+                <div className="min-h-screen bg-[#F3F4F6] text-[#1e293b]">
+                    {/* HEADER */}
+                    <header className="bg-[#005293] text-white sticky top-0 z-50 shadow-lg border-b-4 border-[#F2A900]">
+                        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigateTo('home')}>
+                                <div className="bg-white p-2 rounded-lg text-[#005293]">
+                                    <Icon name={Wrench} size={28} />
+                                </div>
+                                <div>
+                                    <h1 className="text-xl md:text-2xl font-bold uppercase">Der Repair-Lieferwagen</h1>
+                                    <p className="text-xs text-blue-100">TFO Max Valier Projekt</p>
+                                </div>
+                            </div>
+
+                            <nav className="hidden lg:flex gap-2">
+                                {navItems.map((item) => (
+                                    <button 
+                                        key={item.id} 
+                                        onClick={() => navigateTo(item.id)}
+                                        className={`px-4 py-2 rounded-md font-medium transition-all ${activeTab === item.id ? 'bg-white text-[#005293]' : 'hover:bg-[#004074]'}`}
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </nav>
+
+                            <button className="lg:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                                {mobileMenuOpen ? <Icon name={X} size={32} /> : <Icon name={Menu} size={32} />}
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* MAIN CONTENT */}
+                    <main className="max-w-4xl mx-auto px-4 py-8">
+                        {activeTab === 'home' && (
+                            <div className="space-y-12">
+                                <section className="relative rounded-2xl shadow-xl overflow-hidden h-[400px] flex items-center justify-center text-white text-center">
+                                    <img src={IMAGES.hero} className="absolute inset-0 w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-blue-900/60"></div>
+                                    <div className="relative z-10 p-6">
+                                        <h2 className="text-4xl font-bold mb-4">Wir bringen Hilfe in Ihr Dorf.</h2>
+                                        <p className="text-xl mb-8">Kostenlose Reparaturen von Schülern für Senioren.</p>
+                                        <button onClick={() => navigateTo('schedule')} className="bg-[#F2A900] px-6 py-3 rounded-lg font-bold text-lg">Wann kommen wir?</button>
+                                    </div>
+                                </section>
+
+                                <section className="bg-white p-8 rounded-2xl shadow-md">
+                                    <h3 className="text-2xl font-bold text-[#005293] mb-4 flex items-center gap-2">
+                                        <Icon name={School} size={30} className="text-[#F2A900]" /> Willkommen!
+                                    </h3>
+                                    <p className="text-lg leading-relaxed">
+                                        Wir kommen mit dem Werkstatt-Bus direkt in Ihre Gemeinde. Wir reparieren Ihre Alltagsgegenstände und nehmen uns Zeit für ein Gespräch.
+                                    </p>
+                                </section>
+                            </div>
+                        )}
+
+                        {activeTab === 'services' && (
+                             <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-white p-6 rounded-xl shadow border-t-4 border-[#005293]">
+                                    <Icon name={BatteryCharging} size={32} className="mb-4 text-[#005293]" />
+                                    <h3 className="text-xl font-bold">Elektrische Kleingeräte</h3>
+                                    <p>Mixer, Toaster, Föhne und mehr.</p>
+                                </div>
+                                <div className="bg-white p-6 rounded-xl shadow border-t-4 border-[#005293]">
+                                    <Icon name={Wrench} size={32} className="mb-4 text-[#005293]" />
+                                    <h3 className="text-xl font-bold">Mechanik</h3>
+                                    <p>Stühle, Spielzeug und mechanische Uhren.</p>
+                                </div>
+                             </div>
+                        )}
+
+                        {activeTab === 'schedule' && (
+                            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <table className="w-full">
+                                    <thead className="bg-[#005293] text-white">
+                                        <tr><th className="p-4 text-left">Datum</th><th className="p-4 text-left">Gemeinde</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="border-b"><td className="p-4">Mo, 12. Mai</td><td className="p-4">Eppan</td></tr>
+                                        <tr className="border-b"><td className="p-4">Mi, 14. Mai</td><td className="p-4">Kaltern</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {activeTab === 'about' && (
+                            <div className="bg-white p-8 rounded-xl shadow">
+                                <h2 className="text-3xl font-bold text-[#005293] mb-4">Über uns</h2>
+                                <p className="text-lg">Wir sind die Klasse 4Log A der TFO Max Valier. Brücken bauen zwischen Jung und Alt ist unser Ziel.</p>
+                            </div>
+                        )}
+
+                        {activeTab === 'contact' && (
+                            <div className="bg-[#005293] text-white p-8 rounded-xl text-center">
+                                <Icon name={Phone} size={48} className="mx-auto mb-4 text-[#F2A900]" />
+                                <h2 className="text-2xl font-bold">Rufen Sie uns an</h2>
+                                <p className="text-3xl font-bold mt-2">+39 0471 123 456</p>
+                            </div>
+                        )}
+                    </main>
+
+                    <footer className="bg-[#1e293b] text-white py-10 text-center mt-12 border-t-4 border-[#F2A900]">
+                        <p>© 2026 TFO Max Valier - Repair-Lieferwagen</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
