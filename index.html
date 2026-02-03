@@ -12,19 +12,25 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body { font-family: 'Verdana', sans-serif; background-color: #F3F4F6; }
+        body { font-family: 'Verdana', sans-serif; background-color: #F3F4F6; margin: 0; }
+        #root { min-height: 100vh; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">Lade Anwendung...</div>
 
     <script type="text/babel">
         const App = () => {
             const [activeTab, setActiveTab] = React.useState('home');
 
+            // Icon-Komponente mit Fallback, falls Lucide noch lädt
             const LucideIcon = ({ name, size = 20, className = "" }) => {
-                const IconComponent = window.lucide[name];
-                return IconComponent ? <IconComponent size={size} className={className} /> : null;
+                try {
+                    const IconComponent = window.lucide ? window.lucide[name] : null;
+                    return IconComponent ? <IconComponent size={size} className={className} /> : <span className="w-5 h-5"></span>;
+                } catch (e) {
+                    return <span className="w-5 h-5"></span>;
+                }
             };
 
             const navItems = [
@@ -36,19 +42,22 @@
             ];
 
             return (
-                <div className="min-h-screen">
+                <div className="min-h-screen flex flex-col">
                     <header className="bg-[#005293] text-white sticky top-0 z-50 shadow-lg border-b-4 border-[#F2A900]">
                         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
                             <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('home')}>
                                 <div className="bg-white p-2 rounded-lg text-[#005293]">
                                     <LucideIcon name="Wrench" size={28} />
                                 </div>
-                                <h1 className="text-xl font-bold uppercase">Repair-Lieferwagen</h1>
+                                <h1 className="text-xl font-bold uppercase tracking-tight">Repair-Lieferwagen</h1>
                             </div>
                             <nav className="hidden md:flex gap-2">
                                 {navItems.map(item => (
-                                    <button key={item.id} onClick={() => setActiveTab(item.id)} 
-                                        className={`px-3 py-2 rounded font-medium transition-colors ${activeTab === item.id ? 'bg-white text-[#005293]' : 'hover:bg-blue-800'}`}>
+                                    <button 
+                                        key={item.id} 
+                                        onClick={() => setActiveTab(item.id)} 
+                                        className={`px-3 py-2 rounded font-medium transition-colors ${activeTab === item.id ? 'bg-white text-[#005293]' : 'hover:bg-blue-800'}`}
+                                    >
                                         {item.label}
                                     </button>
                                 ))}
@@ -56,16 +65,16 @@
                         </div>
                     </header>
 
-                    <main className="max-w-4xl mx-auto px-4 py-10">
+                    <main className="max-w-4xl mx-auto px-4 py-10 flex-grow w-full">
                         {activeTab === 'home' && (
                             <div className="text-center space-y-6">
                                 <div className="bg-white p-10 rounded-3xl shadow-xl border-2 border-blue-100">
                                     <h2 className="text-4xl font-bold text-[#005293] mb-4">Jung hilft Alt.</h2>
                                     <p className="text-xl text-gray-600 italic">Ein Projekt der TFO Max Valier (Klasse 4Log A)</p>
                                     <div className="h-1 w-20 bg-[#F2A900] mx-auto my-6"></div>
-                                    <p className="text-lg">Wir reparieren Ihre Alltagsgegenstände kostenlos und bringen Generationen zusammen.</p>
+                                    <p className="text-lg text-gray-700">Wir reparieren Ihre Alltagsgegenstände kostenlos und bringen Generationen zusammen.</p>
                                     <button onClick={() => setActiveTab('schedule')} className="mt-8 bg-[#F2A900] text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-yellow-500 transition-all">
-                                        Unseren Fahrplan ansehen
+                                        Fahrplan ansehen
                                     </button>
                                 </div>
                             </div>
@@ -76,12 +85,12 @@
                                 <div className="bg-white p-6 rounded-xl shadow border-l-4 border-[#005293]">
                                     <LucideIcon name="BatteryCharging" size={40} className="text-[#005293] mb-4" />
                                     <h3 className="text-xl font-bold">Elektronik</h3>
-                                    <p>Küchengeräte, Radios, Lampen und kleine Haushaltsgeräte.</p>
+                                    <p className="text-gray-600">Küchengeräte, Radios, Lampen und kleine Haushaltsgeräte.</p>
                                 </div>
                                 <div className="bg-white p-6 rounded-xl shadow border-l-4 border-[#005293]">
                                     <LucideIcon name="Hammer" size={40} className="text-[#005293] mb-4" />
                                     <h3 className="text-xl font-bold">Mechanik</h3>
-                                    <p>Kleinmöbel, Spielzeug, Fahrräder und vieles mehr.</p>
+                                    <p className="text-gray-600">Kleinmöbel, Spielzeug, Fahrräder und vieles mehr.</p>
                                 </div>
                             </div>
                         )}
@@ -90,19 +99,19 @@
                             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                                 <div className="bg-[#005293] p-4 text-white font-bold text-center">Fahrplan 2026</div>
                                 <div className="p-4 divide-y">
-                                    <div className="py-4 flex justify-between items-center">
-                                        <div>
+                                    <div className="py-4 flex justify-between items-center px-2">
+                                        <div className="text-left">
                                             <span className="block font-bold text-[#005293]">Montag, 12. Mai</span>
-                                            <span className="text-sm text-gray-500 text-left block">Dorfplatz</span>
+                                            <span className="text-sm text-gray-500">Dorfplatz</span>
                                         </div>
-                                        <span className="bg-blue-50 px-3 py-1 rounded text-sm font-bold">Eppan - 09:00</span>
+                                        <span className="bg-blue-50 px-3 py-1 rounded text-sm font-bold text-[#005293]">Eppan - 09:00</span>
                                     </div>
-                                    <div className="py-4 flex justify-between items-center">
-                                        <div>
+                                    <div className="py-4 flex justify-between items-center px-2">
+                                        <div className="text-left">
                                             <span className="block font-bold text-[#005293]">Mittwoch, 14. Mai</span>
-                                            <span className="text-sm text-gray-500 text-left block">Kirchplatz</span>
+                                            <span className="text-sm text-gray-500">Kirchplatz</span>
                                         </div>
-                                        <span className="bg-blue-50 px-3 py-1 rounded text-sm font-bold">Kaltern - 10:30</span>
+                                        <span className="bg-blue-50 px-3 py-1 rounded text-sm font-bold text-[#005293]">Kaltern - 10:30</span>
                                     </div>
                                 </div>
                             </div>
@@ -111,30 +120,35 @@
                         {activeTab === 'about' && (
                             <div className="bg-white p-8 rounded-2xl shadow">
                                 <h3 className="text-2xl font-bold mb-4 text-[#005293]">Wer wir sind</h3>
-                                <p className="mb-4">Wir sind die Schüler der <strong>Klasse 4Log A</strong> der Technologischen Fachoberschule "Max Valier".</p>
-                                <p>Mit unserem Repair-Lieferwagen möchten wir nicht nur Technik reparieren, sondern auch den Austausch zwischen den Generationen in Südtirol fördern.</p>
+                                <p className="mb-4 text-gray-700">Wir sind die Schüler der <strong>Klasse 4Log A</strong> der Technologischen Fachoberschule "Max Valier".</p>
+                                <p className="text-gray-700">Mit unserem Repair-Lieferwagen möchten wir nicht nur Technik reparieren, sondern auch den Austausch zwischen den Generationen in Südtirol fördern.</p>
                             </div>
                         )}
 
                         {activeTab === 'contact' && (
                             <div className="bg-[#005293] text-white p-10 rounded-3xl text-center shadow-2xl">
                                 <LucideIcon name="Phone" size={48} className="mx-auto text-[#F2A900] mb-6" />
-                                <h3 className="text-3xl font-bold mb-2">Kontaktieren Sie uns</h3>
-                                <p className="text-blue-100 mb-6">Für Terminfragen oder Infos stehen wir bereit:</p>
-                                <p className="text-4xl font-mono font-bold">+39 0471 123 456</p>
+                                <h3 className="text-3xl font-bold mb-2">Kontakt</h3>
+                                <p className="text-blue-100 mb-6">Fragen zum Projekt?</p>
+                                <p className="text-4xl font-mono font-bold tracking-wider">+39 0471 123 456</p>
                             </div>
                         )}
                     </main>
 
-                    <footer className="text-center py-10 text-gray-500 text-sm">
-                        &copy; 2026 TFO Max Valier | Repair-Lieferwagen Projekt
+                    <footer className="text-center py-8 text-gray-400 text-sm">
+                        &copy; 2026 TFO Max Valier | Fachrichtung Logistik & Produktion
                     </footer>
                 </div>
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // Render-Prozess starten
+        try {
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+        } catch (err) {
+            document.getElementById('root').innerHTML = "Fehler beim Laden: " + err.message;
+        }
     </script>
 </body>
 </html>
